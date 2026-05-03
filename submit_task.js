@@ -1,5 +1,16 @@
 $(document).ready(function(){
 
+    $("#file").change(function(){
+        if($("#file").val() != ""){
+            $("#removeFile").show();
+        }
+    });
+
+    $("#removeFile").click(function(){
+        $("#file").val("");
+        $("#removeFile").hide();
+    });
+
     $("#submitForm").submit(function(e){
         e.preventDefault();
 

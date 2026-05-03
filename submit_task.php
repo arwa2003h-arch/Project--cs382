@@ -39,6 +39,9 @@ $status = "Pending";
 
             <label>Upload File:</label>
             <input type="file" id="file" name="file">
+            <button type="button" id="removeFile">Remove File</button>
+
+            <br>
 
             <button type="submit">Submit Task</button>
         </form>

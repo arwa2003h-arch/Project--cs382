@@ -68,6 +68,16 @@ button:hover {
     background-color: #1a252f;
 }
 
+#removeFile {
+    display: none;
+    margin-left: 10px;
+    background-color: #b23b3b;
+}
+
+#removeFile:hover {
+    background-color: #8f2f2f;
+}
+
 #message {
     margin-top: 20px;
     font-weight: bold;
