@@ -17,6 +17,11 @@ $status = "Pending";
 <body>
 
     <div class="container">
+
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">Back to Home</a>
+        </div>
+
         <h2>Submit Task</h2>
 
         <div class="task-box">
@@ -39,6 +44,7 @@ $status = "Pending";
         </form>
 
         <div id="message"></div>
+
     </div>
 
 </body>

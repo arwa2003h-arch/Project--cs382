@@ -11,6 +11,23 @@ body {
     border: 1px solid #ddd;
 }
 
+.top-bar {
+    margin-bottom: 10px;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    background-color: #eef3f7;
+    color: #2c3e50;
+    text-decoration: none;
+    border: 1px solid #ccc;
+}
+
+.back-btn:hover {
+    background-color: #dce6ee;
+}
+
 h2 {
     text-align: center;
     color: #2c3e50;
