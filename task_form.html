@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Add / Edit Task</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>Add / Edit Task</h2>
+
+<form id="taskForm">
+    Task ID (for edit): <input type="text" id="task_id" readonly><br><br>
+    Title: <input type="text" id="title" required><br><br>
+    Description: <textarea id="description"></textarea><br><br>
+    Deadline: <input type="date" id="deadline" required><br><br>
+    Priority: 
+    <select id="priority">
+        <option>High</option>
+        <option selected>Medium</option>
+        <option>Low</option>
+    </select><br><br>
+    Course ID: <input type="text" id="course_id"><br><br>
+    <button type="submit">Save Task</button>
+    <button type="button" id="resetBtn">Reset</button>
+</form>
+
+<div id="message"></div>
+
+<script>
+$(document).ready(function() {
+    // إذا كان في الرابط ?id= رقم، نحمّل بيانات المهمة (تعديل)
+    let taskId = new URLSearchParams(window.location.search).get('id');
+    if (taskId) {
+        $.get('get_task.php', {id: taskId}, function(data) {
+            if (data.status == 'success') {
+                $('#task_id').val(data.task.id);
+                $('#title').val(data.task.title);
+                $('#description').val(data.task.description);
+                $('#deadline').val(data.task.deadline);
+                $('#priority').val(data.task.priority);
+                $('#course_id').val(data.task.course_id);
+                $('#message').text('Loaded for edit').css('color', 'blue');
+            } else {
+                $('#message').text('Error: ' + data.message).css('color', 'red');
+            }
+        }, 'json');
+    }
+
+    // حفظ المهمة (إضافة أو تعديل)
+    $('#taskForm').submit(function(e) {
+        e.preventDefault();
+        let title = $('#title').val().trim();
+        let deadline = $('#deadline').val();
+        if (title == '' || deadline == '') {
+            $('#message').text('Title and deadline required').css('color', 'red');
+            return;
+        }
+
+        let formData = {
+            task_id: $('#task_id').val(),
+            title: title,
+            description: $('#description').val(),
+            deadline: deadline,
+            priority: $('#priority').val(),
+            course_id: $('#course_id').val()
+        };
+
+        $.post('save_task.php', formData, function(res) {
+            if (res.status == 'success') {
+                $('#message').text(res.message).css('color', 'green');
+                if (!$('#task_id').val()) {
+                    $('#taskForm')[0].reset();  // مسح بعد الإضافة
+                }
+            } else {
+                $('#message').text('Error: ' + res.message).css('color', 'red');
+            }
+        }, 'json');
+    });
+
+    $('#resetBtn').click(function() {
+        $('#taskForm')[0].reset();
+        $('#task_id').val('');
+        $('#message').text('Form cleared').css('color', 'gray');
+    });
+});
+</script>
+
+</body>
+</html>
