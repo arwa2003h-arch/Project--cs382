@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="container login-box">
+    <h2>Welcome<span>Back</span></h2>
+    <div class="subtitle">Sign in to continue</div>
+    
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="pass" placeholder="Password">
+    
+    <div class="remember-row">
+        <label>
+            <input type="checkbox" id="remember"> Remember Me
+        </label>
+        <a href="#" id="forgotLink">Forgot Password?</a>
+    </div>
+    
+    <button class="btn" id="doLogin">Login</button>
+    
+    <div class="message" id="msg"></div>
+    
+    <div class="link">
+        Don't have an account? <a href="register.html">Create Account</a>
+    </div>
+</div>
+
+<!-- نافذة Forgot Password -->
+<div id="forgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;">
+    <div style="background:white; width:350px; margin:100px auto; padding:25px; border-radius:15px; text-align:center;">
+        <h3>Reset Password</h3>
+        <p>Enter your email to reset password</p>
+        <input type="email" id="resetEmail" placeholder="Your Email" style="width:100%; padding:10px; margin:10px 0; border-radius:25px; border:1px solid #ddd;">
+        <button id="sendResetBtn" style="background:#667eea; color:white; padding:10px 20px; border:none; border-radius:25px; cursor:pointer;">Send Reset Link</button>
+        <button id="closeModal" style="background:#ccc; color:#333; padding:10px 20px; border:none; border-radius:25px; cursor:pointer; margin-left:10px;">Close</button>
+        <p id="resetMsg" style="margin-top:10px; font-size:13px;"></p>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    // تذكرني
+    if(localStorage.getItem("remember") == "true"){
+        $("#email").val(localStorage.getItem("email"));
+        $("#remember").prop("checked", true);
+    }
+    
+    // تسجيل الدخول
+    $("#doLogin").click(function(){
+        let email = $("#email").val();
+        let pass = $("#pass").val();
+        
+        if(email == "" || pass == ""){
+            $("#msg").html("❌ Please fill all fields").css("color","red");
+            return;
+        }
+        
+        $.ajax({
+            url: "login.php",
+            type: "POST",
+            data: {email: email, password: pass},
+            success: function(res){
+                if(email == "student@test.com" && pass == "123"){
+                    if($("#remember").is(":checked")){
+                        localStorage.setItem("email", email);
+                        localStorage.setItem("remember", "true");
+                    }
+                    $("#msg").html("✅ Welcome Student!").css("color","green");
+                } else if(email == "teacher@test.com" && pass == "123"){
+                    $("#msg").html("✅ Welcome Teacher!").css("color","green");
+                } else {
+                    $("#msg").html("❌ Invalid email or password").css("color","red");
+                }
+            }
+        });
+    });
+    
+    // Forgot Password
+    $("#forgotLink").click(function(e){
+        e.preventDefault();
+        $("#forgotModal").fadeIn();
+    });
+    
+    $("#closeModal").click(function(){
+        $("#forgotModal").fadeOut();
+    });
+    
+    $(window).click(function(e){
+        if($(e.target).is("#forgotModal")){
+            $("#forgotModal").fadeOut();
+        }
+    });
+    
+    $("#sendResetBtn").click(function(){
+        let email = $("#resetEmail").val();
+        
+        if(email == ""){
+            $("#resetMsg").html("❌ Please enter your email").css("color","red");
+            return;
+        }
+        
+        if(email.indexOf("@") == -1 || email.indexOf(".") == -1){
+            $("#resetMsg").html("❌ Invalid email format").css("color","red");
+            return;
+        }
+        
+        $.ajax({
+            url: "forgot_password.php",
+            type: "POST",
+            data: {email: email},
+            success: function(response){
+                $("#resetMsg").html("✅ Reset link sent to " + email).css("color","green");
+                $("#resetEmail").val("");
+                setTimeout(function(){
+                    $("#forgotModal").fadeOut();
+                    $("#resetMsg").html("");
+                }, 2000);
+            },
+            error: function(){
+                $("#resetMsg").html("❌ Connection error").css("color","red");
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* خلفية متدرجة */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* الصندوق الأبيض المشترك */
+.container {
+    background: white;
+    padding: 40px 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* عرض مختلف لكل صفحة */
+.login-box {
+    width: 380px;
+}
+
+.register-box {
+    width: 420px;
+}
+
+/* العنوان */
+.container h2 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.container h2 span {
+    color: #667eea;
+}
+
+/* النص تحت العنوان */
+.subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* الحقول */
+.container input,
+.container select {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.container input:focus,
+.container select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+/* صف التذكرني (لصفحة Login فقط) */
+.remember-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 13px;
+}
+
+.remember-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #555;
+}
+
+.remember-row a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.remember-row a:hover {
+    text-decoration: underline;
+}
+
+/* الزر المشترك */
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #5a67d8;
+    transform: scale(1.02);
+}
+
+/* رسالة الخطأ/النجاح */
+.message {
+    margin-top: 20px;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+/* الروابط */
+.link {
+    display: block;
+    margin-top: 25px;
+    color: #888;
+    font-size: 14px;
+}
+
+.link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
