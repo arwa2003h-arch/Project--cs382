@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet" href="student_dashboard.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <div class="logo-box">
+                <div class="logo-icon">✓</div>
+                <h2>Smart Tasks</h2>
+            </div>
+
+            <ul class="menu">
+    <li><a href="student_dashboard.html" class="active">Home</a></li>
+    <li><a href="login.html">Login</a></li>
+    <li><a href="register.html">Register</a></li>
+    <li><a href="login.html">Logout</a></li>
+</ul>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="top-header">
+                <div>
+                    <h1>Student Dashboard</h1>
+                    <p>View your assignments, due dates, countdown timer, and submission status.</p>
+                </div>
+
+                <div class="student-box">Student</div>
+            </header>
+
+            <section class="top-dashboard">
+                <div class="summary-cards">
+                    <div class="summary-card completed-box">
+                        <h3 id="completedCount">0</h3>
+                        <p>Completed Tasks</p>
+                    </div>
+
+                    <div class="summary-card pending-box">
+                        <h3 id="pendingCount">0</h3>
+                        <p>Pending Tasks</p>
+                    </div>
+
+                    <div class="summary-card late-box">
+                        <h3 id="lateCount">0</h3>
+                        <p>Late Tasks</p>
+                    </div>
+                </div>
+
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <h3>Progress</h3>
+                        <span id="progressPercent">0%</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+
+                    <p id="progressText">Your completed tasks will appear here.</p>
+                </div>
+            </section>
+
+            <section class="filter-section">
+                <button class="filter-btn active" data-filter="All">All</button>
+                <button class="filter-btn" data-filter="Completed">Completed</button>
+                <button class="filter-btn" data-filter="Pending">Pending</button>
+                <button class="filter-btn" data-filter="Late">Late</button>
+            </section>
+
+            <section class="tasks-section" id="assignments">
+                <h2>My Assignments</h2>
+
+                <div id="taskList" class="task-list">
+                    <!-- Tasks will be loaded here using AJAX -->
+                </div>
+            </section>
+
+            <section class="notifications-section">
+                <h2>Notifications</h2>
+
+                <div class="notifications-list">
+                    <div class="notification-item success">
+                        Your assignment “ER Diagram” was submitted successfully.
+                    </div>
+
+                    <div class="notification-item reminder">
+                        Reminder: “Student Dashboard Design” is due tomorrow at 11:59 PM.
+                    </div>
+
+                    <div class="notification-item warning">
+                        Warning: You have 1 late assignment that still needs submission.
+                    </div>
+
+                    <div class="notification-item update">
+                        The due date for “HTML Controls Task” has been updated by your instructor.
+                    </div>
+
+                    <div class="notification-item reminder">
+                        New assignment added in CS382 course: “AJAX Task”.
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="student_dashboard.js"></script>
+</body>
+</html>
