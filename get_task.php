@@ -1,15 +1,21 @@
 <?php
 header('Content-Type: application/json');
+require_once 'config.php';
 
-$id = $_GET['id'] ?? 0;
+$id = (int)($_GET['id'] ?? 0);
+if ($id <= 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid task ID']);
+    exit;
+}
 
+$db = new Database();
+$stmt = $db->conn->prepare("SELECT id, title, description, deadline, course_id FROM tasks WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$tasks = [
-    1 => ['id' => 1, 'title' => 'Submit report', 'description' => 'Phase 2', 'deadline' => '2026-05-15', 'priority' => 'High', 'course_id' => 'CS382']
-];
-
-if (isset($tasks[$id])) {
-    echo json_encode(['status' => 'success', 'task' => $tasks[$id]]);
+if ($row = $result->fetch_assoc()) {
+    echo json_encode(['status' => 'success', 'task' => $row]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Task not found']);
 }
