@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once 'config.php';
-
+// B
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid task ID']);
