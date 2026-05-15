@@ -5,7 +5,7 @@ class Database {
     private $pass = '';
     private $dbname = 'task_manager';
     public $conn;
-// b
+
     public function __construct() {
         $this->conn = new mysqli($this->host, $this->user, $this->pass, $this->dbname);
         if ($this->conn->connect_error) {

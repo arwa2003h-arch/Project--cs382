@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once 'config.php';
-// b
+
 $db = new Database();
 $result = $db->conn->query("SELECT id, name FROM courses ORDER BY name");
 
