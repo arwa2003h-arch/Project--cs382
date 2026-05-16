@@ -1,42 +1,35 @@
 <?php
 header('Content-Type: application/json');
+require_once 'config.php';
 
+$db = new Database();
 $action = $_REQUEST['action'] ?? 'dashboard';
 
-$tasks = [
-    [
-        'id' => 1,
-        'title' => 'Assignment 1',
-        'description' => 'Solve the first set of course exercises.',
-        'deadline' => '2026-05-20',
-        'priority' => 'High',
-        'status' => 'Pending',
-        'course_id' => 'CS382',
-        'submitted_students' => 8
-    ],
-    [
-        'id' => 2,
-        'title' => 'Database Project',
-        'description' => 'Submit the database design and SQL script.',
-        'deadline' => '2026-05-28',
-        'priority' => 'Medium',
-        'status' => 'Completed',
-        'course_id' => 'CS382',
-        'submitted_students' => 14
-    ],
-    [
-        'id' => 3,
-        'title' => 'Interface Report',
-        'description' => 'Upload the Phase 2 interface screenshots.',
-        'deadline' => '2026-05-14',
-        'priority' => 'Low',
-        'status' => 'Pending',
-        'course_id' => 'CS382',
-        'submitted_students' => 5
-    ]
-];
-
 if ($action === 'dashboard') {
+    // Load teacher tasks from database with course name and submission count
+    $sql = "
+        SELECT
+            tasks.id,
+            tasks.title,
+            tasks.description,
+            tasks.deadline,
+            COALESCE(courses.name, 'No Course') AS course_name,
+            COUNT(submissions.id) AS submitted_students
+        FROM tasks
+        LEFT JOIN courses ON tasks.course_id = courses.id
+        LEFT JOIN submissions ON tasks.id = submissions.task_id
+        GROUP BY tasks.id, tasks.title, tasks.description, tasks.deadline, courses.name
+        ORDER BY tasks.deadline ASC
+    ";
+
+    $result = $db->conn->query($sql);
+    $tasks = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $row['status'] = task_status($row['deadline'], (int)$row['submitted_students']);
+        $tasks[] = $row;
+    }
+
     send_success('Dashboard data loaded.', $tasks);
 }
 
@@ -47,16 +40,42 @@ if ($action === 'delete') {
         send_error('Invalid task id.');
     }
 
-    $originalCount = count($tasks);
-    $tasks = array_values(array_filter(
-        $tasks,
-        function ($task) use ($taskId) {
-            return (int)$task['id'] !== $taskId;
-        }
-    ));
+    // Delete task from database using AJAX request
+    $stmt = $db->conn->prepare("DELETE FROM tasks WHERE id = ?");
+    $stmt->bind_param("i", $taskId);
 
-    if (count($tasks) === $originalCount) {
+    if (!$stmt->execute()) {
+        send_error('Delete failed.');
+    }
+
+    if ($stmt->affected_rows === 0) {
         send_error('Task not found.');
+    }
+
+    $_REQUEST['action'] = 'dashboard';
+    $action = 'dashboard';
+
+    $sql = "
+        SELECT
+            tasks.id,
+            tasks.title,
+            tasks.description,
+            tasks.deadline,
+            COALESCE(courses.name, 'No Course') AS course_name,
+            COUNT(submissions.id) AS submitted_students
+        FROM tasks
+        LEFT JOIN courses ON tasks.course_id = courses.id
+        LEFT JOIN submissions ON tasks.id = submissions.task_id
+        GROUP BY tasks.id, tasks.title, tasks.description, tasks.deadline, courses.name
+        ORDER BY tasks.deadline ASC
+    ";
+
+    $result = $db->conn->query($sql);
+    $tasks = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $row['status'] = task_status($row['deadline'], (int)$row['submitted_students']);
+        $tasks[] = $row;
     }
 
     send_success('Task deleted successfully.', $tasks);
@@ -87,7 +106,7 @@ function calculate_stats($tasks) {
     $submittedStudents = 0;
 
     foreach ($tasks as $task) {
-        if (strtolower($task['status']) === 'pending') {
+        if ($task['status'] === 'Pending') {
             $pendingTasks++;
         }
 
@@ -99,5 +118,17 @@ function calculate_stats($tasks) {
         'submitted_students' => $submittedStudents,
         'pending_tasks' => $pendingTasks
     ];
+}
+
+function task_status($deadline, $submittedStudents) {
+    if ($submittedStudents > 0) {
+        return 'Completed';
+    }
+
+    if (strtotime($deadline) < strtotime(date('Y-m-d'))) {
+        return 'Late';
+    }
+
+    return 'Pending';
 }
 ?>

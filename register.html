@@ -8,71 +8,86 @@
 </head>
 <body>
 
-<div class="container register-box">
-    <h2>Create<span>Account</span></h2>
-    <div class="subtitle">Sign up to get started</div>
+<div class="dashboard-container">
+    <!-- Shared sidebar menu added to match dashboard pages -->
     
-    <input type="text" id="name" placeholder="Full Name">
-    <input type="email" id="email" placeholder="Email Address">
-    <input type="password" id="pass" placeholder="Password">
-    <input type="password" id="confirm" placeholder="Confirm Password">
-    
-    <select id="role">
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-    </select>
-    
-    <button class="btn" id="doReg">Register</button>
-    
-    <div class="message" id="msg"></div>
-    
-    <div class="link">
-        Already have an account? <a href="login.html">Sign In</a>
-    </div>
+
+    <!-- Page content -->
+    <main class="main-content auth-page">
+        <div class="container register-box">
+            <h2>Create<span>Account</span></h2>
+            <div class="subtitle">Sign up to get started</div>
+
+            <input type="text" id="name" placeholder="Full Name">
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="pass" placeholder="Password">
+            <input type="password" id="confirm" placeholder="Confirm Password">
+
+            <select id="role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
+
+            <button class="btn" id="doReg">Register</button>
+
+            <div class="message" id="msg"></div>
+
+            <div class="link">
+                Already have an account? <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </main>
 </div>
 
 <script>
 $(document).ready(function(){
+    // Register validation and AJAX
     $("#doReg").click(function(){
         let name = $("#name").val();
         let email = $("#email").val();
         let pass = $("#pass").val();
         let confirm = $("#confirm").val();
         let role = $("#role").val();
-        
+
         if(name == "" || email == "" || pass == "" || confirm == ""){
-            $("#msg").html("❌ Please fill all fields").css("color","red");
+            $("#msg").html("Please fill all fields").css("color","red");
             return;
         }
-        
+
         if(email.indexOf("@") == -1 || email.indexOf(".") == -1){
-            $("#msg").html("❌ Invalid email format").css("color","red");
+            $("#msg").html("Invalid email format").css("color","red");
             return;
         }
-        
+
         if(pass != confirm){
-            $("#msg").html("❌ Passwords do not match").css("color","red");
+            $("#msg").html("Passwords do not match").css("color","red");
             return;
         }
-        
+
         if(pass.length < 3){
-            $("#msg").html("❌ Password too short (min 3 characters)").css("color","red");
+            $("#msg").html("Password too short (min 3 characters)").css("color","red");
             return;
         }
-        
+
+        // Send new account data to PHP and save it in users table
         $.ajax({
             url: "register.php",
             type: "POST",
+            dataType: "json",
             data: {name: name, email: email, password: pass, role: role},
             success: function(response){
-                $("#msg").html("✅ Account created successfully! Redirecting...").css("color","green");
-                $("#name, #email, #pass, #confirm").val("");
-                setTimeout(function(){
-                    window.location.href = "login.html";
-                }, 2000);
+                if(response.status == "success"){
+                    $("#msg").html(response.message + "! Redirecting...").css("color","green");
+                    $("#name, #email, #pass, #confirm").val("");
+                    setTimeout(function(){
+                        window.location.href = "login.html";
+                    }, 1500);
+                } else{
+                    $("#msg").html(response.message).css("color","red");
+                }
             },
             error: function(){
-                $("#msg").html("❌ Connection error").css("color","red");
+                $("#msg").html("Connection error").css("color","red");
             }
         });
     });

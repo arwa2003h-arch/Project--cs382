@@ -8,28 +8,29 @@
     <link rel="stylesheet" href="CSS/style.css">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="teacher_dashboard.js" defer></script>
+    <script src="teacher_dashboard.js?v=2" defer></script>
 </head>
 
 <body>
 
-    <div class="sidebar">
+    <div class="dashboard-container">
 
-        <h2 class="logo">Whiteboard</h2>
+        <!-- Shared sidebar menu for teacher pages -->
+        <aside class="sidebar">
+            <div class="logo-box">
+                <div class="logo-icon">W</div>
+                <h2>Whiteboard</h2>
+            </div>
 
-        <ul>
-            <li class="active">Dashboard</li>
+            <ul class="menu">
+                <li><a href="teacher_dashboard.html" class="active">Teacher Home</a></li>
+                <li><a href="task_form.html">Add Assignment</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            </ul>
+        </aside>
 
-            <li>
-                <a href="task_form.html"> Add Assignment</a>
-            </li>
-
-            <li>Logout</li>
-        </ul>
-
-    </div>
-
-    <main class="main-content">
+        <!-- Page content -->
+        <main class="main-content">
 
         <div class="header">
 
@@ -76,16 +77,15 @@
                 <thead>
                     <tr>
                         <th>Title</th>
+                        <th>Course</th>
                         <th>Deadline</th>
-                        <th>Priority</th>
-                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr>
-                        <td colspan="5" class="empty-row">Loading tasks...</td>
+                        <td colspan="4" class="empty-row">Loading tasks...</td>
                     </tr>
                 </tbody>
 
@@ -93,7 +93,8 @@
 
         </section>
 
-    </main>
+        </main>
+    </div>
 
     <div id="taskModal" class="modal" aria-hidden="true">
         <div class="modal-content">
@@ -101,7 +102,6 @@
             <h2 id="modalTitle">Task Details</h2>
             <p><strong>Description:</strong> <span id="modalDescription"></span></p>
             <p><strong>Deadline:</strong> <span id="modalDeadline"></span></p>
-            <p><strong>Priority:</strong> <span id="modalPriority"></span></p>
             <p><strong>Course:</strong> <span id="modalCourse"></span></p>
             <p><strong>Submitted Students:</strong> <span id="modalSubmissions"></span></p>
         </div>

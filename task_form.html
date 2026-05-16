@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Assighment</title>
+    <title>Add Assignment</title>
     <!-- jQuery and jQuery UI -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -11,42 +11,67 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-<div class="container">
-    <h2>Add Assignment</h2>
+<div class="dashboard-container">
+    <!-- Shared sidebar menu added to match dashboard pages -->
+    <aside class="sidebar">
+        <div class="logo-box">
+            <div class="logo-icon">W</div>
+            <h2>Whiteboard</h2>
+        </div>
 
-    <form id="taskForm">
-        <input type="hidden" id="task_id" name="task_id">
+        <ul class="menu">
+            <li><a href="teacher_dashboard.html">Teacher Home</a></li>
+            <li><a href="task_form.html" class="active">Add Assignment</a></li>
+            <li><a href="logout.php">Logout</a></li>
+        </ul>
+    </aside>
 
-        <label>Title *</label>
-        <input type="text" id="title" name="title" required>
+    <!-- Page content -->
+    <main class="main-content form-page">
+        <div class="container">
+            <h2>Add Assignment</h2>
 
-        <label>Description</label>
-        <textarea id="description" name="description" rows="4"></textarea>
+            <form id="taskForm">
+                <input type="hidden" id="task_id" name="task_id">
 
-        <label>Deadline *</label>
-        <input type="text" id="deadline" name="deadline" placeholder="YYYY-MM-DD" required>
+                <label>Title *</label>
+                <input type="text" id="title" name="title" required>
 
-        <label>Course</label>
-        <select id="course_id" name="course_id">
-            <option value="">-- Select Course --</option>
-        </select>
+                <label>Description</label>
+                <textarea id="description" name="description" rows="4"></textarea>
 
-        <button type="submit" id="saveBtn">Save Task</button>
-        <button type="button" id="resetBtn" class="reset">Reset</button>
-    </form>
+                <label>Deadline *</label>
+                <input type="text" id="deadline" name="deadline" placeholder="YYYY-MM-DD" required>
 
-    <div id="message" class="message"></div>
+                <label>Course</label>
+                <select id="course_id" name="course_id">
+                    <option value="">-- Select Course --</option>
+                </select>
+
+                <button type="submit" id="saveBtn">Save Task</button>
+                <button type="button" id="resetBtn" class="reset">Reset</button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </div>
+    </main>
 </div>
 
 <script>
 $(document).ready(function() {
-    // Load courses via AJAX
+    // Load course codes from database before add/edit form is used
     $.get('get_courses.php', function(data) {
         if (data.status === 'success') {
             var select = $('#course_id');
             $.each(data.courses, function(i, course) {
                 select.append('<option value="' + course.id + '">' + course.name + '</option>');
             });
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var taskId = urlParams.get('id');
+            if (taskId) {
+                loadTaskData(taskId);
+            }
         } else {
             $('#message').text('Failed to load courses.').addClass('error');
         }
@@ -58,13 +83,7 @@ $(document).ready(function() {
         minDate: 0
     });
 
-    // Check for edit mode (?id=...)
-    var urlParams = new URLSearchParams(window.location.search);
-    var taskId = urlParams.get('id');
-    if (taskId) {
-        loadTaskData(taskId);
-    }
-
+    // Load selected task data when teacher clicks Edit
     function loadTaskData(id) {
         $.get('get_task.php', { id: id }, function(data) {
             if (data.status === 'success') {
@@ -113,8 +132,10 @@ $(document).ready(function() {
                     $('#taskForm')[0].reset();
                     $('#deadline').val('');
                 }
-                // Optional redirect after 2 seconds (uncomment if needed)
-                // setTimeout(function() { window.location.href = 'teacher_dashboard.php'; }, 1500);
+                // Go back to teacher dashboard after saving to show database changes
+                setTimeout(function() {
+                    window.location.href = 'teacher_dashboard.html';
+                }, 1200);
             } else {
                 $('#message').text(response.message).addClass('error');
             }

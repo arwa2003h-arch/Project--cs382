@@ -11,6 +11,9 @@ class Database {
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
+
+        // Use UTF-8 for all database text
+        $this->conn->set_charset("utf8mb4");
     }
 }
 ?>

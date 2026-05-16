@@ -14,26 +14,37 @@ $(document).ready(function(){
     $("#submitForm").submit(function(e){
         e.preventDefault();
 
-        var answer = $("#answer").val();
-        var file = $("#file").val();
+        let answer = $("#answer").val();
+        let file = $("#file").val();
 
         if(answer == "" && file == ""){
             $("#message").html("Please write your answer or upload a file.");
             $("#message").css("color", "red");
-        }
-        else{
-            $.post("submit_task_action.php",
-            {
-                task_id: $("#task_id").val(),
-                answer: answer
-            },
-            function(data){
-                $("#message").html(data);
-                $("#message").css("color", "green");
-                $("#status").text("Completed");
-            });
+            return;
         }
 
+        // Send the selected task submission using FormData for text and file
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "submit_task_action.php",
+            type: "POST",
+            data: formData,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response.status == "success"){
+                    $("#message").html(response.message).css("color", "green");
+                    $("#status").text("Completed");
+                } else {
+                    $("#message").html(response.message).css("color", "red");
+                }
+            },
+            error: function(){
+                $("#message").html("Connection error.").css("color", "red");
+            }
+        });
     });
 
 });

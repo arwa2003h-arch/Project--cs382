@@ -3,9 +3,8 @@ $(document).ready(function () {
     let tasks = [];
 
     $.ajax({
-        url: "manage_tasks.php",
+        url: "get_student_tasks.php",
         type: "GET",
-        data: { action: "dashboard" },
         dataType: "json",
 
         success: function(response) {
@@ -54,11 +53,10 @@ $(document).ready(function () {
 
             let taskCard = `
                 <div class="task-card">
-                    <h3>${task.course_id}</h3>
+                    <h3>${task.course_name}</h3>
                     <p><strong>Assignment:</strong> ${task.title}</p>
                     <p><strong>Description:</strong> ${task.description}</p>
                     <p><strong>Due Date:</strong> ${formatDate(task.deadline)}</p>
-                    <p><strong>Priority:</strong> ${task.priority}</p>
                     <span class="status ${task.status}">${task.status}</span>
                     <div class="countdown" data-date="${task.deadline}">Loading timer...</div>
 
