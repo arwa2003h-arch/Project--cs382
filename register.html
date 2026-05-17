@@ -23,11 +23,6 @@
             <input type="password" id="pass" placeholder="Password">
             <input type="password" id="confirm" placeholder="Confirm Password">
 
-            <select id="role">
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-            </select>
-
             <button class="btn" id="doReg">Register</button>
 
             <div class="message" id="msg"></div>
@@ -47,7 +42,6 @@ $(document).ready(function(){
         let email = $("#email").val();
         let pass = $("#pass").val();
         let confirm = $("#confirm").val();
-        let role = $("#role").val();
 
         if(name == "" || email == "" || pass == "" || confirm == ""){
             $("#msg").html("Please fill all fields").css("color","red");
@@ -74,7 +68,7 @@ $(document).ready(function(){
             url: "register.php",
             type: "POST",
             dataType: "json",
-            data: {name: name, email: email, password: pass, role: role},
+            data: {name: name, email: email, password: pass,},
             success: function(response){
                 if(response.status == "success"){
                     $("#msg").html(response.message + "! Redirecting...").css("color","green");

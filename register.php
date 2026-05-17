@@ -6,7 +6,7 @@ require_once 'config.php';
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
-$role = $_POST['role'] ?? 'student';
+$role = 'student';
 
 if ($name === '' || $email === '' || $password === '') {
     echo json_encode(['status' => 'error', 'message' => 'Please fill all fields']);
@@ -18,10 +18,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-if (!in_array($role, ['student', 'teacher'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid role']);
-    exit;
-}
+
 
 $db = new Database();
 
