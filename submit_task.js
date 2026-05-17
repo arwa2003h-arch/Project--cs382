@@ -1,8 +1,12 @@
 $(document).ready(function(){
 
+    $("#removeFile").hide();
+
     $("#file").change(function(){
         if($("#file").val() != ""){
             $("#removeFile").show();
+        } else {
+            $("#removeFile").hide();
         }
     });
 
@@ -14,8 +18,8 @@ $(document).ready(function(){
     $("#submitForm").submit(function(e){
         e.preventDefault();
 
-        let answer = $("#answer").val();
-        let file = $("#file").val();
+        var answer = $("#answer").val();
+        var file = $("#file").val();
 
         if(answer == "" && file == ""){
             $("#message").html("Please write your answer or upload a file.");
@@ -23,8 +27,7 @@ $(document).ready(function(){
             return;
         }
 
-        // Send the selected task submission using FormData for text and file
-        let formData = new FormData(this);
+        var formData = new FormData(this);
 
         $.ajax({
             url: "submit_task_action.php",
@@ -33,17 +36,23 @@ $(document).ready(function(){
             dataType: "json",
             contentType: false,
             processData: false,
+
             success: function(response){
                 if(response.status == "success"){
-                    $("#message").html(response.message).css("color", "green");
+                    $("#message").html(response.message);
+                    $("#message").css("color", "green");
                     $("#status").text("Completed");
+                    $("#submitForm").hide();
                 } else {
-                    $("#message").html(response.message).css("color", "red");
+                    $("#message").html(response.message);
+                    $("#message").css("color", "red");
                 }
             },
+
             error: function(){
-                $("#message").html("Connection error.").css("color", "red");
-            }
+                    $("#message").html("Submission error.");
+                     $("#message").css("color", "red");
+}
         });
     });
 
