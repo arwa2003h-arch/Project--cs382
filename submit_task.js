@@ -41,7 +41,7 @@ $(document).ready(function(){
                 if(response.status == "success"){
                     $("#message").html(response.message);
                     $("#message").css("color", "green");
-                    $("#status").text("Completed");
+                    $("#status").text(response.task_status);
                     $("#submitForm").hide();
                 } else {
                     $("#message").html(response.message);
@@ -50,9 +50,9 @@ $(document).ready(function(){
             },
 
             error: function(){
-                    $("#message").html("Submission error.");
-                     $("#message").css("color", "red");
-}
+                $("#message").html("Submission error.");
+                $("#message").css("color", "red");
+            }
         });
     });
 

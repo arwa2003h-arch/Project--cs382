@@ -34,6 +34,25 @@ if ($answer == '' && empty($_FILES['file']['name'])) {
 
 $db = new Database();
 
+$taskStmt = $db->conn->prepare("SELECT deadline FROM tasks WHERE id = ?");
+$taskStmt->bind_param("i", $taskId);
+$taskStmt->execute();
+$taskResult = $taskStmt->get_result();
+$taskData = $taskResult->fetch_assoc();
+
+if (!$taskData) {
+    echo json_encode(['status' => 'error', 'message' => 'Task not found.']);
+    exit;
+}
+
+$taskStatus = 'Completed';
+$message = 'Task submitted successfully.';
+
+if (strtotime($taskData['deadline']) < strtotime(date('Y-m-d'))) {
+    $taskStatus = 'Late';
+    $message = 'Task submitted late.';
+}
+
 $check = $db->conn->prepare("SELECT id FROM submissions WHERE task_id = ? AND student_id = ?");
 $check->bind_param("ii", $taskId, $studentId);
 $check->execute();
@@ -64,7 +83,11 @@ $stmt = $db->conn->prepare("INSERT INTO submissions (task_id, student_id, answer
 $stmt->bind_param("iiss", $taskId, $studentId, $answer, $fileName);
 
 if ($stmt->execute()) {
-    echo json_encode(['status' => 'success', 'message' => 'Task submitted successfully.']);
+    echo json_encode([
+        'status' => 'success',
+        'message' => $message,
+        'task_status' => $taskStatus
+    ]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Submission failed.']);
 }

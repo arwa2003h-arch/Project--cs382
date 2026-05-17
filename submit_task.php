@@ -16,6 +16,7 @@ $studentId = (int)($_SESSION['user_id'] ?? 0);
 $task = null;
 $status = 'Pending';
 $pageMessage = '';
+$alreadySubmitted = false;
 
 if ($taskId > 0) {
     $db = new Database();
@@ -44,7 +45,13 @@ if ($taskId > 0) {
 
     if ($task) {
         if (!empty($task['submission_id'])) {
-            $status = 'Completed';
+            $alreadySubmitted = true;
+
+            if (strtotime($task['deadline']) < strtotime(date('Y-m-d'))) {
+                $status = 'Late';
+            } else {
+                $status = 'Completed';
+            }
         } elseif (strtotime($task['deadline']) < strtotime(date('Y-m-d'))) {
             $status = 'Late';
         }
@@ -96,7 +103,7 @@ if ($taskId > 0) {
                     <p><strong>Status:</strong> <span id="status"><?php echo $status; ?></span></p>
                 </div>
 
-                <?php if ($status == 'Completed'): ?>
+                <?php if ($alreadySubmitted): ?>
 
                     <div class="message success">
                         This task has already been submitted.
